@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Stock</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Add Stock to Portfolio</h1>
+        <form method="POST">
+            <div class="form-group">
+                <label for="ticker">Ticker</label>
+                <input type="text" class="form-control" id="ticker" name="ticker" required>
+            </div>
+            <div class="form-group">
+                <label for="shares">Shares</label>
+                <input type="number" step="0.01" class="form-control" id="shares" name="shares" required>
+            </div>
+            <div class="form-group">
+                <label for="purchase_price">Purchase Price</label>
+                <input type="number" step="0.01" class="form-control" id="purchase_price" name="purchase_price" required>
+            </div>
+            <div class="form-group">
+                <label for="notes">Notes (e.g., Meeting Decision)</label>
+                <textarea class="form-control" id="notes" name="notes"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Stock</button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+        <h3 class="mt-4">Remove Stock</h3>
+        <form method="POST" action="{{ url_for('remove_stock') }}">
+            <div class="form-group">
+                <label for="ticker">Ticker</label>
+                <input type="text" class="form-control" id="ticker" name="ticker" required>
+            </div>
+            <div class="form-group">
+                <label for="notes">Notes (e.g., Meeting Decision)</label>
+                <textarea class="form-control" id="notes" name="notes"></textarea>
+            </div>
+            <button type="submit" class="btn btn-danger">Remove Stock</button>
+        </form>
+        <h3 class="mt-4">Update Shares</h3>
+        <form method="POST" action="{{ url_for('update_shares') }}">
+            <div class="form-group">
+                <label for="ticker">Ticker</label>
+                <input type="text" class="form-control" id="ticker" name="ticker" required>
+            </div>
+            <div class="form-group">
+                <label for="shares_change">Shares Change (Positive to add, Negative to remove)</label>
+                <input type="number" step="0.01" class="form-control" id="shares_change" name="shares_change" required>
+            </div>
+            <div class="form-group">
+                <label for="notes">Notes (e.g., Meeting Decision)</label>
+                <textarea class="form-control" id="notes" name="notes"></textarea>
+            </div>
+            <button type="submit" class="btn btn-warning">Update Shares</button>
+        </form>
+    </div>
+</body>
+</html>
