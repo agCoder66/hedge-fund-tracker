@@ -176,3 +176,23 @@ def transactions():
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
+
+
+
+## Hopkins Hedge Portfolio
+
+# Key Features:
+
+# Yahoo Finance API for real time monitoring of stock prices
+
+# Ability to buy/sell stocks and shares
+
+# Allow viewers to see key stats like portfolio value, percent invested in sectors, stocks, what we’ve lost/gained money on, what the vote results were
+
+# Updated based on club’s decisions during meetings
+
+# Future possibilities:
+
+# Stock of the day to buy/sell?
+
+# Monitor market and email club members daily updates
