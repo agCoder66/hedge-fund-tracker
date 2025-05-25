@@ -6,6 +6,7 @@ import pandas as pd
 
 app = Flask(__name__)
 
+# Initialize SQLite database
 def init_db():
     conn = sqlite3.connect('portfolio.db')
     c = conn.cursor()
@@ -15,6 +16,9 @@ def init_db():
                  (ticker TEXT, action TEXT, shares REAL, price REAL, date TEXT, notes TEXT)''')
     conn.commit()
     conn.close()
+
+# Call init_db() when the app starts
+init_db()  # <--- Added to ensure database is initialized in production
 
 def get_sector(ticker):
     try:
@@ -134,5 +138,4 @@ def transactions():
     return render_template('transactions.html', transactions=transactions)
 
 if __name__ == '__main__':
-    init_db()
     app.run(debug=True)
