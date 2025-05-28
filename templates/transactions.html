@@ -1,12 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Transaction History</title>
+    <title>Transactions</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container">
         <h1>Transaction History</h1>
+        {% if current_user.is_authenticated %}
+            <p>Logged in as {{ current_user.id }} | <a href="{{ url_for('logout') }}">Logout</a></p>
+        {% else %}
+            <p><a href="{{ url_for('login') }}">Login</a></p>
+        {% endif %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <table class="table">
             <thead>
                 <tr>
@@ -31,13 +48,15 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Dashboard</a>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Home</a>
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
 
 <!-- Future interface ideas:
-day/time, greetings, messages, meeting recaps, cancellation notices, club heads/Jr. Officer page
+day/time, greetings, messages, meeting recaps, cancellation notices, club heads/Jr. Officer page. scene based on daytime. jazz music? popular stock real time monitoring page (even if we're not invested)
 
 # Yahoo Finance API for real time monitoring of stock prices
 

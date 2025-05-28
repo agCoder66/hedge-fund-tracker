@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Meeting Recaps</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Meeting Recaps</h1>
+        {% if current_user.is_authenticated %}
+            <p>Logged in as {{ current_user.id }} | <a href="{{ url_for('logout') }}">Logout</a></p>
+        {% else %}
+            <p><a href="{{ url_for('login') }}">Login</a></p>
+        {% endif %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% if current_user.is_authenticated and current_user.is_club_head %}
+            <h3>Add Recap</h3>
+            <form method="POST">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="content">Content</label>
+                    <textarea class="form-control" id="content" name="content" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Recap</button>
+            </form>
+        {% endif %}
+        <h3>Recent Recaps</h3>
+        {% for recap in recaps %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ recap[0] }}</h5>
+                    <p class="card-text">{{ recap[1] }}</p>
+                    <p class="card-text"><small class="text-muted">Posted by {{ recap[2] }} on {{ recap[3] }}</small></p>
+                </div>
+            </div>
+        {% endfor %}
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Home</a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
