@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<!-- Future interface ideas:
-day/time, greetings, messages, meeting recaps, cancellation notices, club heads/Jr. Officer page -->
 <html>
 <head>
-    <title>Hopkins Hedge Portfolio Viewer</title>
+    <title>Hedge Fund Club Portfolio</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body { padding: 20px; }
@@ -12,7 +10,19 @@ day/time, greetings, messages, meeting recaps, cancellation notices, club heads/
 </head>
 <body>
     <div class="container">
-        <h1>Hopkins Hedge Portfolio Viewer</h1>
+        <h1>Hedge Fund Club Portfolio Tracker</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <div class="card">
             <div class="card-body">
                 <h3>Portfolio Overview</h3>
@@ -45,8 +55,11 @@ day/time, greetings, messages, meeting recaps, cancellation notices, club heads/
                                 <td>{{ holding[1] }}</td>
                                 <td>${{ "%.2f" % holding[2] }}</td>
                                 <td>
-                                    {% set stock = yf.Ticker(holding[0]) %}
-                                    ${{ "%.2f" % stock.info['regularMarketPrice'] }}
+                                    {% if holding[0] in current_prices %}
+                                        ${{ "%.2f" % current_prices[holding[0]] }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
                                 </td>
                                 <td>
                                     {% if holding[0] in gains_losses %}
