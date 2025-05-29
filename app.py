@@ -285,6 +285,7 @@ def load_user(username):
         logger.error(f"Error loading user {username}: {e}")
         return None
 
+# Initialize SQLite database
 def init_db():
     try:
         conn = sqlite3.connect('portfolio.db')
@@ -322,6 +323,9 @@ def get_daytime_greeting():
         return "Good Evening", "evening"
     else:
         return "Good Night", "night"
+
+# Call init_db() when the app starts
+init_db()  # <--- Added to ensure database is initialized in production
 
 def get_sector(ticker):
     try:
@@ -756,5 +760,4 @@ def post_message():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    init_db()
     app.run(debug=True)
