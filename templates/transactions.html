@@ -6,12 +6,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Transaction History</h1>
-        {% if current_user.is_authenticated %}
-            <p>Logged in as {{ current_user.id }} | <a href="{{ url_for('logout') }}">Logout</a></p>
-        {% else %}
-            <p><a href="{{ url_for('login') }}">Login</a></p>
-        {% endif %}
+        <h1>Transaction History - The Hopkins Hedge</h1>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -54,20 +49,3 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-
-<!-- Future interface ideas:
-day/time, greetings, messages, meeting recaps, cancellation notices, club heads/Jr. Officer page. scene based on daytime. jazz music? popular stock real time monitoring page (even if we're not invested)
-
-# Yahoo Finance API for real time monitoring of stock prices
-
-# Ability to buy/sell stocks and shares
-
-# Allow viewers to see key stats like portfolio value, percent invested in sectors, stocks, what we’ve lost/gained money on, what the vote results were
-
-# Updated based on club’s decisions during meetings
-
-# Future possibilities:
-
-# Stock of the day to buy/sell?
-
-# Monitor market and email club members daily updates -->

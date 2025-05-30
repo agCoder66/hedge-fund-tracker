@@ -1,97 +1,9 @@
-<!-- <!DOCTYPE html>
-<html>
-<head>
-    <title>Hedge Fund Club Portfolio</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body { padding: 20px; }
-        .card { margin-bottom: 20px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Hedge Fund Club Portfolio Tracker</h1>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        <div class="card">
-            <div class="card-body">
-                <h3>Portfolio Overview</h3>
-                <p><strong>Total Portfolio Value:</strong> ${{ "%.2f" % total_value }}</p>
-                <h4>Sector Allocations</h4>
-                <ul>
-                    {% for sector, percentage in sectors.items() %}
-                        <li>{{ sector }}: {{ "%.2f" % percentage }}%</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <h3>Holdings</h3>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Ticker</th>
-                            <th>Shares</th>
-                            <th>Purchase Price</th>
-                            <th>Current Price</th>
-                            <th>Gain/Loss</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for holding in holdings %}
-                            <tr>
-                                <td>{{ holding[0] }}</td>
-                                <td>{{ holding[1] }}</td>
-                                <td>${{ "%.2f" % holding[2] }}</td>
-                                <td>
-                                    {% if holding[0] in current_prices %}
-                                        ${{ "%.2f" % current_prices[holding[0]] }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if holding[0] in gains_losses %}
-                                        ${{ "%.2f" % gains_losses[holding[0]] }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <h3>Actions</h3>
-                <a href="{{ url_for('add_stock') }}" class="btn btn-primary">Add Stock</a>
-                <a href="{{ url_for('transactions') }}" class="btn btn-secondary">View Transactions</a>
-            </div>
-        </div>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html> -->
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hedge Fund Club Portfolio</title>
+    <title>The Hopkins Hedge Portfolio</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { padding: 20px; }
         .card { margin-bottom: 20px; }
@@ -100,16 +12,15 @@
         .evening { background-color: #f0e6ff; }
         .night { background-color: #e6e6e6; }
         .audio-player { position: fixed; bottom: 20px; right: 20px; }
+        #sectorChart { max-width: 400px; margin: 20px auto; }
+        .emblem { max-width: 100px; margin-bottom: 20px; }
     </style>
 </head>
 <body class="{{ time_of_day }}">
     <div class="container">
-        <h1>{{ greeting }}! Welcome to the Hedge Fund Club Portfolio Tracker</h1>
-        {% if current_user.is_authenticated %}
-            <p>Logged in as {{ current_user.id }} | <a href="{{ url_for('logout') }}">Logout</a></p>
-        {% else %}
-            <p><a href="{{ url_for('login') }}">Login</a></p>
-        {% endif %}
+        <img src="https://upload.wikimedia.org/wikipedia/en/4/44/Hopkins_Logo_Maroon.jpg
+" alt="Hopkins School Emblem" class="emblem">
+        <h1>{{ greeting }}! Welcome to The Hopkins Hedge Portfolio Tracker</h1>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -125,14 +36,15 @@
         <div class="card">
             <div class="card-body">
                 <h3>Club Messages</h3>
-                {% if current_user.is_authenticated and current_user.is_club_head %}
-                    <form method="POST" action="{{ url_for('post_message') }}">
-                        <div class="form-group">
-                            <textarea class="form-control" name="content" placeholder="Post a message..." required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Post Message</button>
-                    </form>
-                {% endif %}
+                <form method="POST" action="{{ url_for('post_message') }}">
+                    <div class="form-group">
+                        <textarea class="form-control" name="content" placeholder="Post a message..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post Message</button>
+                </form>
                 {% for message in messages %}
                     <p><strong>{{ message[1] }} ({{ message[2] }}):</strong> {{ message[0] }}</p>
                 {% endfor %}
@@ -143,6 +55,7 @@
                 <h3>Portfolio Overview</h3>
                 <p><strong>Total Portfolio Value:</strong> ${{ "%.2f" % total_value }}</p>
                 <h4>Sector Allocations</h4>
+                <canvas id="sectorChart"></canvas>
                 <ul>
                     {% for sector, percentage in sectors.items() %}
                         <li>{{ sector }}: {{ "%.2f" % percentage }}%</li>
@@ -153,7 +66,7 @@
         <div class="card">
             <div class="card-body">
                 <h3>Holdings</h3>
-                <table class="table">
+                <table class="table" id="holdingsTable">
                     <thead>
                         <tr>
                             <th>Ticker</th>
@@ -169,14 +82,14 @@
                                 <td>{{ holding[0] }}</td>
                                 <td>{{ holding[1] }}</td>
                                 <td>${{ "%.2f" % holding[2] }}</td>
-                                <td>
+                                <td id="price-{{ holding[0] }}">
                                     {% if holding[0] in current_prices %}
                                         ${{ "%.2f" % current_prices[holding[0]] }}
                                     {% else %}
                                         N/A
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td id="gainloss-{{ holding[0] }}">
                                     {% if holding[0] in gains_losses %}
                                         ${{ "%.2f" % gains_losses[holding[0]] }}
                                     {% else %}
@@ -192,9 +105,7 @@
         <div class="card">
             <div class="card-body">
                 <h3>Actions</h3>
-                {% if current_user.is_authenticated and current_user.is_club_head %}
-                    <a href="{{ url_for('add_stock') }}" class="btn btn-primary">Add Stock</a>
-                {% endif %}
+                <a href="{{ url_for('add_stock') }}" class="btn btn-primary">Edit Stocks</a>
                 <a href="{{ url_for('transactions') }}" class="btn btn-secondary">View Transactions</a>
                 <a href="{{ url_for('recaps') }}" class="btn btn-secondary">Meeting Recaps</a>
                 <a href="{{ url_for('notices') }}" class="btn btn-secondary">Cancellation Notices</a>
@@ -204,13 +115,13 @@
         </div>
         <div class="audio-player">
             <audio id="backgroundMusic" loop>
-                <source src="https://www.fesliyanstudios.com/play-mp3/7034" type="audio/mpeg">
+                <source src="https://cdn.pixabay.com/download/audio/2023/03/26/audio_6b4b3e6d8a.mp3" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
             <button onclick="toggleMusic()" class="btn btn-sm btn-info">Toggle Music</button>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         function toggleMusic() {
@@ -221,6 +132,53 @@
                 music.pause();
             }
         }
+
+        function updatePrices() {
+            $.getJSON('/api/prices', function(data) {
+                if (data.error) {
+                    console.error('Error fetching prices:', data.error);
+                    return;
+                }
+                $('#holdingsTable tbody tr').each(function() {
+                    var ticker = $(this).find('td').first().text();
+                    if (data[ticker] && data[ticker] !== 'N/A') {
+                        var price = parseFloat(data[ticker]).toFixed(2);
+                        $(this).find('td#price-' + ticker).text('$' + price);
+                        var shares = parseFloat($(this).find('td').eq(1).text());
+                        var purchasePrice = parseFloat($(this).find('td').eq(2).text().replace('$', ''));
+                        var gainLoss = ((data[ticker] - purchasePrice) * shares).toFixed(2);
+                        $(this).find('td#gainloss-' + ticker).text('$' + gainLoss);
+                    }
+                });
+            }).fail(function() {
+                console.error('Error: Failed to fetch prices');
+            });
+        }
+
+        setInterval(updatePrices, 10000);
+        updatePrices();
+
+        var ctx = document.getElementById('sectorChart').getContext('2d');
+        var sectorChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: {{ chart_data.labels|tojson|safe }},
+                datasets: [{
+                    label: 'Sector Allocation',
+                    data: {{ chart_data.values|tojson|safe }},
+                    backgroundColor: {{ chart_data.colors|tojson|safe }}
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true,
+                        text: 'Portfolio Sector Allocation'
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>

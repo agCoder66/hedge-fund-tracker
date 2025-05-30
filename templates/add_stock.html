@@ -1,88 +1,12 @@
-<!-- <!DOCTYPE html>
-<html>
-<head>
-    <title>Add Stock</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Add Stock</h1>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        <form method="POST">
-            <div class="form-group">
-                <label for="ticker">Ticker</label>
-                <input type="text" class="form-control" id="ticker" name="ticker" required>
-            </div>
-            <div class="form-group">
-                <label for="shares">Shares</label>
-                <input type="number" step="0.01" class="form-control" id="shares" name="shares" required>
-            </div>
-            <div class="form-group">
-                <label for="notes">Notes (e.g., Meeting Decision)</label>
-                <textarea class="form-control" id="notes" name="notes"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Add Stock</button>
-            <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
-        </form>
-        <h3 class="mt-4">Sell All Shares</h3>
-        <form method="POST" action="{{ url_for('remove_stock') }}">
-            <div class="form-group">
-                <label for="ticker">Ticker</label>
-                <input type="text" class="form-control" id="ticker" name="ticker" required>
-            </div>
-            <div class="form-group">
-                <label for="notes">Notes (e.g., Meeting Decision)</label>
-                <textarea class="form-control" id="notes" name="notes"></textarea>
-            </div>
-            <button type="submit" class="btn btn-danger">Sell</button>
-        </form>
-        <h3 class="mt-4">Update Shares</h3>
-        <form method="POST" action="{{ url_for('update_shares') }}">
-            <div class="form-group">
-                <label for="ticker">Ticker</label>
-                <input type="text" class="form-control" id="ticker" name="ticker" required>
-            </div>
-            <div class="form-group">
-                <label for="shares_change">Buy/Sell Quantity (Positive to buy, Negative to sell)</label>
-                <input type="number" step="0.01" class="form-control" id="shares_change" name="shares_change" required>
-            </div>
-            <div class="form-group">
-                <label for="notes">Notes (e.g., Meeting Decision)</label>
-                <textarea class="form-control" id="notes" name="notes"></textarea>
-            </div>
-            <button type="submit" class="btn btn-warning">Update Shares</button>
-        </form>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html> -->
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Stock</title>
+    <title>Edit Stocks</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container">
-        <h1>Add Stock to Portfolio</h1>
-        {% if current_user.is_authenticated %}
-            <p>Logged in as {{ current_user.id }} | <a href="{{ url_for('logout') }}">Logout</a></p>
-        {% else %}
-            <p><a href="{{ url_for('login') }}">Login</a></p>
-        {% endif %}
+        <h1>Edit Stocks - The Hopkins Hedge</h1>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -95,7 +19,12 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
+        <h3>Add Stock</h3>
         <form method="POST">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
             <div class="form-group">
                 <label for="ticker">Ticker</label>
                 <input type="text" class="form-control" id="ticker" name="ticker" required>
@@ -114,6 +43,10 @@
         <h3 class="mt-4">Remove Stock</h3>
         <form method="POST" action="{{ url_for('remove_stock') }}">
             <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="form-group">
                 <label for="ticker">Ticker</label>
                 <input type="text" class="form-control" id="ticker" name="ticker" required>
             </div>
@@ -125,6 +58,10 @@
         </form>
         <h3 class="mt-4">Update Shares</h3>
         <form method="POST" action="{{ url_for('update_shares') }}">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
             <div class="form-group">
                 <label for="ticker">Ticker</label>
                 <input type="text" class="form-control" id="ticker" name="ticker" required>
